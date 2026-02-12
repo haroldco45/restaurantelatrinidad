@@ -2,178 +2,126 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>La Trinidad App - Vibras Positivas</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>La Trinidad - Pedidos</title>
     <style>
-        :root { --rojo: #8b0000; --oro: #d4af37; --crema: #fdf5e6; --texto: #333; }
-        body { font-family: 'Helvetica', sans-serif; background-color: var(--crema); margin: 0; padding: 10px; padding-bottom: 120px; color: var(--texto); }
+        :root { --primary: #8b0000; --gold: #d4af37; --bg: #fdf5e6; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); margin: 0; padding: 10px; color: #333; overflow-x: hidden; }
         
-        /* Suscripción Invisible */
-        #lock-screen { display: none; position: fixed; inset: 0; background: white; z-index: 9999; text-align: center; padding-top: 30%; }
-
-        header { text-align: center; border-bottom: 3px solid var(--rojo); padding: 10px; background: white; border-radius: 0 0 15px 15px; }
-        .logo-text { font-size: 26px; font-weight: bold; color: var(--rojo); margin: 0; }
-        .header-sub { font-size: 12px; color: #666; font-style: italic; }
-
-        .cliente-card { background: white; padding: 15px; border-radius: 12px; margin: 15px 0; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        .cliente-card input { width: 92%; padding: 12px; margin: 6px 0; border: 1px solid #ddd; border-radius: 6px; font-size: 15px; }
-        .edit-label { font-size: 12px; color: #007bff; float: right; font-weight: bold; cursor: pointer; }
-
-        .cat-box { background: var(--rojo); color: white; padding: 12px; border-radius: 8px; margin: 25px 0 10px 0; font-size: 18px; font-weight: bold; display: flex; align-items: center; }
-        .item-card { background: white; padding: 15px; margin-bottom: 10px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; border-left: 5px solid var(--oro); }
-        .item-info { flex: 1; margin-right: 10px; }
-        .item-name { font-weight: bold; font-size: 16px; color: #000; display: block; }
-        .item-desc { font-size: 11px; color: #777; line-height: 1.2; display: block; margin-top: 3px; }
-        .item-price { color: var(--rojo); font-weight: bold; font-size: 16px; margin-top: 5px; display: block; }
-
-        .qty-box { display: flex; align-items: center; background: #f0f0f0; border-radius: 8px; padding: 5px; }
-        .btn-qty { background: white; border: 1px solid #ccc; width: 32px; height: 32px; border-radius: 5px; font-size: 20px; font-weight: bold; cursor: pointer; color: var(--rojo); }
-        .qty-num { margin: 0 12px; font-weight: bold; font-size: 18px; min-width: 15px; text-align: center; }
-
-        .footer-total { position: fixed; bottom: 0; left: 0; right: 0; background: white; padding: 15px; border-top: 3px solid var(--rojo); text-align: center; box-shadow: 0 -5px 15px rgba(0,0,0,0.1); }
-        .total-val { font-size: 22px; font-weight: bold; color: var(--rojo); margin-bottom: 10px; }
-        .btn-wa { background: #25d366; color: white; border: none; padding: 15px; border-radius: 50px; width: 100%; font-size: 18px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
-        .dev-tag { font-size: 10px; color: #999; margin-top: 10px; text-transform: uppercase; letter-spacing: 1px; }
+        #bloqueo { display: none; position: fixed; inset: 0; background: white; z-index: 10000; text-align: center; padding-top: 20%; }
+        header { text-align: center; border-bottom: 2px solid var(--primary); padding-bottom: 10px; margin-bottom: 15px; }
+        .logo { font-weight: bold; font-size: 24px; color: var(--primary); text-transform: uppercase; }
+        
+        .client-form { background: #fff; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 10px; }
+        .client-form input, .client-form textarea { width: 100%; padding: 10px; margin: 5px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 14px; }
+        .client-form textarea { resize: none; height: 60px; }
+        
+        #menu-container { padding-bottom: 140px; } /* Espacio para que el botón no tape el menú */
+        .category-title { background: var(--primary); color: white; padding: 8px; border-radius: 4px; margin-top: 15px; font-size: 14px; }
+        .product-card { display: flex; justify-content: space-between; align-items: center; background: white; padding: 10px; margin: 8px 0; border-radius: 8px; border-left: 4px solid var(--gold); }
+        .product-info { flex-grow: 1; font-size: 14px; }
+        .price { color: var(--primary); font-weight: bold; }
+        
+        .controls { display: flex; align-items: center; gap: 8px; }
+        .btn-qty { background: var(--primary); color: white; border: none; width: 28px; height: 28px; border-radius: 50%; font-size: 18px; cursor: pointer; }
+        .qty-val { font-weight: bold; min-width: 15px; text-align: center; }
+        
+        .footer-action { position: fixed; bottom: 0; left: 0; width: 100%; background: white; padding: 10px; border-top: 1px solid #ddd; text-align: center; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); z-index: 999; }
+        .total-box { font-weight: bold; font-size: 18px; color: var(--primary); margin-bottom: 5px; }
+        .btn-send { background: #25d366; color: white; border: none; padding: 10px 20px; border-radius: 25px; font-weight: bold; width: 85%; font-size: 16px; cursor: pointer; }
+        .copyright { font-size: 9px; color: #777; margin-top: 5px; text-transform: uppercase; }
     </style>
 </head>
 <body>
 
-<div id="lock-screen"><h1>Suscripción Vencida</h1><p>Contacte a Vibras Positivas</p></div>
+<div id="bloqueo"><h1>Suscripción Vencida</h1><p>Contacte al administrador.</p></div>
 
 <header>
-    <div class="logo-text">LA TRINIDAD</div>
-    <div class="header-sub">Restaurante - Domicilios: 305 379 2414</div>
+    <div class="logo">La Trinidad</div>
+    <div style="font-size: 11px;">Domicilios: 305 379 2414</div>
 </header>
 
-<div class="cliente-card">
-    <span class="edit-label" onclick="document.getElementById('nombre').focus()">EDITOR DE DATOS</span>
-    <h4 style="margin: 0 0 10px 0;">Datos de Entrega</h4>
-    <input type="text" id="nombre" placeholder="Nombre del Cliente">
-    <input type="text" id="direccion" placeholder="Dirección / Barrio">
-    <input type="tel" id="celular" placeholder="Celular de contacto">
+<div class="client-form">
+    <strong>Datos del Cliente</strong>
+    <input type="text" id="nombre" placeholder="Nombre completo">
+    <input type="text" id="direccion" placeholder="Dirección">
+    <input type="tel" id="celular" placeholder="Celular">
+    <textarea id="observaciones" placeholder="Observaciones adicionales (Ej: sin cebolla, traer cambio...)"></textarea>
 </div>
 
 <div id="menu-container"></div>
 
-<div class="footer-total">
-    <div class="total-val">TOTAL: $<span id="total-text">0</span></div>
-    <button class="btn-wa" onclick="enviarPedido()">
-        ENVIAR PEDIDO (WHATSAPP)
-    </button>
-    <div class="dev-tag">App desarrollada por VIBRAS POSITIVAS © DERECHO DE AUTOR</div>
+<div class="footer-action">
+    <div class="total-box">TOTAL: $<span id="total-val">0</span></div>
+    <button class="btn-send" onclick="enviarPedido()">PEDIR POR WHATSAPP</button>
+    <div class="copyright">App desarrollada por VIBRAS POSITIVAS © DERECHO DE AUTOR</div>
 </div>
 
 <script>
-    // --- CONTROL DE SUSCRIPCIÓN ---
-    const vencimiento = new Date('2026-12-31');
-    if (new Date() > vencimiento) document.getElementById('lock-screen').style.display = 'block';
+    const FECHA_VENCIMIENTO = "2026-12-31";
+    if (new Date() > new Date(FECHA_VENCIMIENTO)) document.getElementById('bloqueo').style.display = 'block';
 
-    // --- BASE DE DATOS EXTRAÍDA CON ESCANEO ---
-    const menuData = [
-        { cat: "DESAYUNOS DEL LAGO", items: [
-            { n: "Huevos Rancheros", d: "Huevos, salchicha, jamón, queso y pan", p: 23000 },
-            { n: "Salmón a la Plancha", d: "Filete premium 250gr", p: 35000 },
-            { n: "Perro Caliente", d: "Salchicha americana, ripio, cebolla, salsas", p: 18000 },
-            { n: "Hamburguesa Especial", d: "Carne 250gr, queso, tocineta, verduras", p: 25000 },
-            { n: "Perras", d: "Preparación especial de la casa", p: 15000 }
-        ]},
-        { cat: "PLATOS FUERTES Y CARNES", items: [
-            { n: "Chopa de Solomito", d: "Corte tierno con ensalada y papas", p: 35000 },
-            { n: "Punta de Anca", d: "Corte premium a la parrilla", p: 35000 },
-            { n: "Solomito al Gusto", d: "Pimienta, champiñones o natural", p: 35000 },
-            { n: "Pechuga a la Plancha", d: "Filete de pollo con guarnición", p: 28000 },
-            { n: "Carne Asada", d: "Res seleccionada 250gr", p: 25000 },
-            { n: "Crepe de Pollo", d: "Salsa blanca y queso fundido", p: 13000 }
-        ]},
-        { cat: "MAICITOS", items: [
-            { n: "Maicito de Pollo", d: "Maíz tierno, pollo desmechado, queso", p: 18000 },
-            { n: "Maicito de Res", d: "Maíz tierno, carne picada, queso", p: 18000 },
-            { n: "Maicito Trifásico", d: "Res, pollo, cerdo y queso", p: 22000 },
-            { n: "Maicito Especial", d: "Con tocineta y doble queso", p: 25000 }
-        ]},
-        { cat: "BEBIDAS Y POSTRES", items: [
-            { n: "Limonada Natural", d: "Refrescante 16oz", p: 7000 },
-            { n: "Limonada de Coco", d: "Cremosa con coco natural", p: 12000 },
-            { n: "Limonada Cerezada", d: "Con cerezas marrasquino", p: 12000 },
-            { n: "Limonada Tropical", d: "Mezcla de frutas cítricas", p: 12000 },
-            { n: "Jugos Naturales", d: "En agua o leche", p: 8000 },
-            { n: "Banana Split", d: "3 sabores, fruta y barquillo", p: 15000 },
-            { n: "Malteadas", d: "Vainilla, chocolate o fresa", p: 15000 }
-        ]}
+    const menu = [
+        { cat: "DESAYUNOS", items: [{n: "Desayuno del lago", p: 17000}, {n: "Huevos rancheros", p: 17000}, {n: "Huevos jamón", p: 19000}, {n: "Calentado huevo", p: 19000}, {n: "Calentado carne", p: 21000}]},
+        { cat: "SALMONES", items: [{n: "Salmón Marinera", p: 73000}, {n: "Salmón Casa", p: 64000}, {n: "Salmón Plancha", p: 61000}, {n: "Salmón Passion", p: 64000}]},
+        { cat: "CARNES", items: [{n: "Baby Beef", p: 51000}, {n: "Punta de Anca", p: 51000}, {n: "Filet Mignon", p: 54000}, {n: "Arroz Camarón", p: 51000}, {n: "Pechuga Plancha", p: 41000}]},
+        { cat: "COMIDAS RÁPIDAS", items: [{n: "Hamb. Especial", p: 27000}, {n: "Hamb. Mignon", p: 31000}, {n: "Perro Caliente", p: 21000}, {n: "Salchipapas", p: 21000}]},
+        { cat: "MAICITOS Y OTROS", items: [{n: "Maicito Pollo", p: 27000}, {n: "Maicito Mixto", p: 30000}, {n: "Deditos Queso x3", p: 15000}, {n: "Pincho Pollo", p: 32000}]},
+        { cat: "BEBIDAS Y POSTRES", items: [{n: "Limonada Natural", p: 13000}, {n: "Limonada Coco", p: 15000}, {n: "Banana Split", p: 22000}, {n: "Mandarina", p: 15000}]}
     ];
 
-    let carrito = {};
+    const cantidades = {};
+    const container = document.getElementById('menu-container');
 
-    function renderizar() {
-        const container = document.getElementById('menu-container');
-        let html = '';
-        menuData.forEach(c => {
-            html += `<div class="cat-box">${c.cat}</div>`;
-            c.items.forEach(i => {
-                html += `
-                    <div class="item-card">
-                        <div class="item-info">
-                            <span class="item-name">${i.n}</span>
-                            <span class="item-desc">${i.d}</span>
-                            <span class="item-price">$${i.p.toLocaleString()}</span>
-                        </div>
-                        <div class="qty-box">
-                            <button class="btn-qty" onclick="update('${i.n}', ${i.p}, -1)">-</button>
-                            <span class="qty-num" id="q-${i.n}">0</span>
-                            <button class="btn-qty" onclick="update('${i.n}', ${i.p}, 1)">+</button>
-                        </div>
-                    </div>`;
-            });
+    menu.forEach(section => {
+        let html = `<div class="category-title">${section.cat}</div>`;
+        section.items.forEach(item => {
+            cantidades[item.n] = 0;
+            html += `
+                <div class="product-card">
+                    <div class="product-info"><strong>${item.n}</strong><br><span class="price">$${item.p.toLocaleString()}</span></div>
+                    <div class="controls">
+                        <button class="btn-qty" onclick="changeQty('${item.n}', -1)">-</button>
+                        <span class="qty-val" id="qty-${item.n}">0</span>
+                        <button class="btn-qty" onclick="changeQty('${item.n}', 1)">+</button>
+                    </div>
+                </div>`;
         });
-        container.innerHTML = html;
+        container.innerHTML += html;
+    });
+
+    function changeQty(name, val) {
+        cantidades[name] = Math.max(0, cantidades[name] + val);
+        document.getElementById(`qty-${name}`).innerText = cantidades[name];
+        actualizarTotal();
     }
 
-    function update(nombre, precio, delta) {
-        if (!carrito[nombre]) carrito[nombre] = { q: 0, p: precio };
-        carrito[nombre].q = Math.max(0, carrito[nombre].q + delta);
-        document.getElementById(`q-${nombre}`).innerText = carrito[nombre].q;
-        
+    function actualizarTotal() {
         let total = 0;
-        Object.values(carrito).forEach(x => total += (x.q * x.p));
-        document.getElementById('total-text').innerText = total.toLocaleString();
+        menu.forEach(s => s.items.forEach(i => total += i.p * cantidades[i.n]));
+        document.getElementById('total-val').innerText = total.toLocaleString();
     }
 
     function enviarPedido() {
-        const n = document.getElementById('nombre').value;
-        const d = document.getElementById('direccion').value;
-        const c = document.getElementById('celular').value;
-
-        if (!n || !d) return alert("Completa los datos del cliente");
-
-        let itemsMsg = "";
-        let finalT = 0;
-
-        for (let key in carrito) {
-            if (carrito[key].q > 0) {
-                let sub = carrito[key].q * carrito[key].p;
-                itemsMsg += `• ${key} (x${carrito[key].q}) - $${sub.toLocaleString()}\n`;
-                finalT += sub;
+        const nom = document.getElementById('nombre').value;
+        const dir = document.getElementById('direccion').value;
+        const obs = document.getElementById('observaciones').value;
+        let total = 0, lista = "";
+        
+        menu.forEach(s => s.items.forEach(i => {
+            if (cantidades[i.n] > 0) {
+                let sub = i.p * cantidades[i.n];
+                total += sub;
+                lista += `*${i.n}* x${cantidades[i.n]} - $${sub.toLocaleString()}\n`;
             }
-        }
+        }));
 
-        if (finalT === 0) return alert("Selecciona al menos un plato");
+        if (total === 0) return alert("Agrega productos al pedido");
+        if (!nom || !dir) return alert("Completa nombre y dirección");
 
-        const factura = `*LA TRINIDAD - PEDIDO*\n` +
-                        `--------------------------\n` +
-                        `*CLIENTE:* ${n}\n` +
-                        `*DIR:* ${d}\n` +
-                        `*TEL:* ${c}\n` +
-                        `--------------------------\n` +
-                        `${itemsMsg}` +
-                        `--------------------------\n` +
-                        `*TOTAL A PAGAR: $${finalT.toLocaleString()}*\n\n` +
-                        `_App desarrollada por Vibras Positivas_`;
-
-        window.open(`https://wa.me/573053792414?text=${encodeURIComponent(factura)}`, '_blank');
+        const msg = `*FACTURA - LA TRINIDAD*\n------------------\n*Cliente:* ${nom}\n*Dir:* ${dir}\n*Obs:* ${obs || 'Ninguna'}\n------------------\n${lista}------------------\n*TOTAL: $${total.toLocaleString()}*\n\n_App por Vibras Positivas_`;
+        window.open(`https://wa.me/573053792414?text=${encodeURIComponent(msg)}`);
     }
-
-    renderizar();
 </script>
-
 </body>
 </html>

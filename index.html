@@ -3,187 +3,176 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>App La Trinidad - Vibras Positivas</title>
+    <title>La Trinidad App - Vibras Positivas</title>
     <style>
-        :root { --primario: #8b0000; --dorado: #d4af37; --fondo: #fdf5e6; }
-        body { font-family: 'Arial', sans-serif; background-color: var(--fondo); margin: 0; padding: 10px; padding-bottom: 100px; }
+        :root { --rojo: #8b0000; --oro: #d4af37; --crema: #fdf5e6; --texto: #333; }
+        body { font-family: 'Helvetica', sans-serif; background-color: var(--crema); margin: 0; padding: 10px; padding-bottom: 120px; color: var(--texto); }
         
-        /* Control de Suscripción Invisible */
-        #bloqueo { display: none; position: fixed; inset: 0; background: white; z-index: 10000; text-align: center; padding-top: 20%; }
+        /* Suscripción Invisible */
+        #lock-screen { display: none; position: fixed; inset: 0; background: white; z-index: 9999; text-align: center; padding-top: 30%; }
 
-        header { text-align: center; border-bottom: 3px solid var(--primario); padding-bottom: 10px; margin-bottom: 15px; }
-        .logo-placeholder { font-weight: bold; font-size: 28px; color: var(--primario); margin: 0; }
-        .info-header { font-size: 13px; color: #555; margin-top: 5px; }
+        header { text-align: center; border-bottom: 3px solid var(--rojo); padding: 10px; background: white; border-radius: 0 0 15px 15px; }
+        .logo-text { font-size: 26px; font-weight: bold; color: var(--rojo); margin: 0; }
+        .header-sub { font-size: 12px; color: #666; font-style: italic; }
 
-        .form-cliente { background: white; padding: 15px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 20px; border-left: 5px solid var(--primario); }
-        .form-cliente input { width: 94%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 5px; font-size: 16px; }
-        .btn-editar { background: #007bff; color: white; border: none; padding: 5px 10px; border-radius: 4px; float: right; cursor: pointer; }
+        .cliente-card { background: white; padding: 15px; border-radius: 12px; margin: 15px 0; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .cliente-card input { width: 92%; padding: 12px; margin: 6px 0; border: 1px solid #ddd; border-radius: 6px; font-size: 15px; }
+        .edit-label { font-size: 12px; color: #007bff; float: right; font-weight: bold; cursor: pointer; }
 
-        .categoria { background: var(--primario); color: white; padding: 10px; border-radius: 5px; margin: 20px 0 10px 0; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; }
-        .plato { background: white; padding: 15px; margin-bottom: 8px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; }
-        .plato-detalle { flex: 1; }
-        .plato-nombre { font-weight: bold; font-size: 16px; display: block; color: #333; }
-        .plato-precio { color: var(--primario); font-weight: bold; font-size: 15px; }
-        
-        .controles { display: flex; align-items: center; gap: 12px; }
-        .btn-cant { background: #eee; border: 1px solid #ccc; width: 35px; height: 35px; border-radius: 5px; font-size: 20px; font-weight: bold; cursor: pointer; color: var(--primario); }
-        .cantidad { font-weight: bold; min-width: 20px; text-align: center; font-size: 18px; }
+        .cat-box { background: var(--rojo); color: white; padding: 12px; border-radius: 8px; margin: 25px 0 10px 0; font-size: 18px; font-weight: bold; display: flex; align-items: center; }
+        .item-card { background: white; padding: 15px; margin-bottom: 10px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; border-left: 5px solid var(--oro); }
+        .item-info { flex: 1; margin-right: 10px; }
+        .item-name { font-weight: bold; font-size: 16px; color: #000; display: block; }
+        .item-desc { font-size: 11px; color: #777; line-height: 1.2; display: block; margin-top: 3px; }
+        .item-price { color: var(--rojo); font-weight: bold; font-size: 16px; margin-top: 5px; display: block; }
 
-        .barra-total { position: fixed; bottom: 0; left: 0; right: 0; background: white; padding: 15px; border-top: 2px solid var(--primario); display: flex; flex-direction: column; align-items: center; box-shadow: 0 -3px 10px rgba(0,0,0,0.1); }
-        .total-texto { font-size: 20px; font-weight: bold; color: var(--primario); margin-bottom: 10px; }
-        .btn-whatsapp { background: #25d366; color: white; border: none; padding: 15px 30px; border-radius: 30px; font-size: 18px; font-weight: bold; width: 90%; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        
-        .copy { font-size: 11px; color: #888; margin-top: 8px; text-align: center; }
+        .qty-box { display: flex; align-items: center; background: #f0f0f0; border-radius: 8px; padding: 5px; }
+        .btn-qty { background: white; border: 1px solid #ccc; width: 32px; height: 32px; border-radius: 5px; font-size: 20px; font-weight: bold; cursor: pointer; color: var(--rojo); }
+        .qty-num { margin: 0 12px; font-weight: bold; font-size: 18px; min-width: 15px; text-align: center; }
+
+        .footer-total { position: fixed; bottom: 0; left: 0; right: 0; background: white; padding: 15px; border-top: 3px solid var(--rojo); text-align: center; box-shadow: 0 -5px 15px rgba(0,0,0,0.1); }
+        .total-val { font-size: 22px; font-weight: bold; color: var(--rojo); margin-bottom: 10px; }
+        .btn-wa { background: #25d366; color: white; border: none; padding: 15px; border-radius: 50px; width: 100%; font-size: 18px; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .dev-tag { font-size: 10px; color: #999; margin-top: 10px; text-transform: uppercase; letter-spacing: 1px; }
     </style>
 </head>
 <body>
 
-<div id="bloqueo">
-    <h2>Suscripción Expirada</h2>
-    <p>Comuníquese con el desarrollador para renovar el servicio.</p>
-</div>
+<div id="lock-screen"><h1>Suscripción Vencida</h1><p>Contacte a Vibras Positivas</p></div>
 
 <header>
-    <p class="logo-placeholder">LA TRINIDAD</p>
-    <div class="info-header">DOMICILIOS Y RESERVAS: 305 379 2414<br>Caucasia, Antioquia</div>
+    <div class="logo-text">LA TRINIDAD</div>
+    <div class="header-sub">Restaurante - Domicilios: 305 379 2414</div>
 </header>
 
-<div class="form-cliente">
-    <button class="btn-editar">EDITAR DATOS</button>
-    <h3 style="margin: 0 0 10px 0; color: var(--primario);">Datos de Entrega</h3>
-    <input type="text" id="nombre" placeholder="Nombre completo">
-    <input type="text" id="direccion" placeholder="Dirección exacta">
-    <input type="tel" id="celular" placeholder="Número de celular">
+<div class="cliente-card">
+    <span class="edit-label" onclick="document.getElementById('nombre').focus()">EDITOR DE DATOS</span>
+    <h4 style="margin: 0 0 10px 0;">Datos de Entrega</h4>
+    <input type="text" id="nombre" placeholder="Nombre del Cliente">
+    <input type="text" id="direccion" placeholder="Dirección / Barrio">
+    <input type="tel" id="celular" placeholder="Celular de contacto">
 </div>
 
-<div id="menu-app"></div>
+<div id="menu-container"></div>
 
-<div class="barra-total">
-    <div class="total-texto">Total a Pagar: $<span id="total-general">0</span></div>
-    <button class="btn-whatsapp" onclick="enviarWhatsapp()">ENVIAR PEDIDO A WHATSAPP</button>
-    <div class="copy">App desarrollada por VIBRAS POSITIVAS © DERECHO DE AUTOR</div>
+<div class="footer-total">
+    <div class="total-val">TOTAL: $<span id="total-text">0</span></div>
+    <button class="btn-wa" onclick="enviarPedido()">
+        ENVIAR PEDIDO (WHATSAPP)
+    </button>
+    <div class="dev-tag">App desarrollada por VIBRAS POSITIVAS © DERECHO DE AUTOR</div>
 </div>
 
 <script>
-    // --- CONTROL DE SUSCRIPCIÓN INVISIBLE ---
-    const fechaVencimiento = new Date('2026-12-31'); // Puedes cambiar la fecha aquí
-    if (new Date() > fechaVencimiento) {
-        document.getElementById('bloqueo').style.display = 'block';
-    }
+    // --- CONTROL DE SUSCRIPCIÓN ---
+    const vencimiento = new Date('2026-12-31');
+    if (new Date() > vencimiento) document.getElementById('lock-screen').style.display = 'block';
 
-    // --- BASE DE DATOS DE PLATOS (Extraídos de las fotos) ---
-    const datosMenu = [
-        { categoria: "Desayunos del Lago", platos: [
-            { n: "Huevos rancheros", p: 23000 },
-            { n: "Salmón a la plancha", p: 35000 },
-            { n: "Perro caliente especial", p: 18000 },
-            { n: "Hamburguesa especial", p: 25000 },
-            { n: "Perras", p: 15000 }
+    // --- BASE DE DATOS EXTRAÍDA CON ESCANEO ---
+    const menuData = [
+        { cat: "DESAYUNOS DEL LAGO", items: [
+            { n: "Huevos Rancheros", d: "Huevos, salchicha, jamón, queso y pan", p: 23000 },
+            { n: "Salmón a la Plancha", d: "Filete premium 250gr", p: 35000 },
+            { n: "Perro Caliente", d: "Salchicha americana, ripio, cebolla, salsas", p: 18000 },
+            { n: "Hamburguesa Especial", d: "Carne 250gr, queso, tocineta, verduras", p: 25000 },
+            { n: "Perras", d: "Preparación especial de la casa", p: 15000 }
         ]},
-        { categoria: "Carnes (Cortes Finos)", platos: [
-            { n: "Chopa de Solomito", p: 35000 },
-            { n: "Punta de Anca", p: 35000 },
-            { n: "Pechuga a la Plancha", p: 28000 },
-            { n: "Solomito al Gusto", p: 35000 },
-            { n: "Carne Asada", p: 25000 }
+        { cat: "PLATOS FUERTES Y CARNES", items: [
+            { n: "Chopa de Solomito", d: "Corte tierno con ensalada y papas", p: 35000 },
+            { n: "Punta de Anca", d: "Corte premium a la parrilla", p: 35000 },
+            { n: "Solomito al Gusto", d: "Pimienta, champiñones o natural", p: 35000 },
+            { n: "Pechuga a la Plancha", d: "Filete de pollo con guarnición", p: 28000 },
+            { n: "Carne Asada", d: "Res seleccionada 250gr", p: 25000 },
+            { n: "Crepe de Pollo", d: "Salsa blanca y queso fundido", p: 13000 }
         ]},
-        { categoria: "Maicitos y Crepes", platos: [
-            { n: "Crepe de Pollo", p: 13000 },
-            { n: "Maicito de Pollo", p: 18000 },
-            { n: "Maicito de Res", p: 18000 },
-            { n: "Maicito Trifásico", p: 22000 },
-            { n: "Banana Split", p: 15000 }
+        { cat: "MAICITOS", items: [
+            { n: "Maicito de Pollo", d: "Maíz tierno, pollo desmechado, queso", p: 18000 },
+            { n: "Maicito de Res", d: "Maíz tierno, carne picada, queso", p: 18000 },
+            { n: "Maicito Trifásico", d: "Res, pollo, cerdo y queso", p: 22000 },
+            { n: "Maicito Especial", d: "Con tocineta y doble queso", p: 25000 }
         ]},
-        { categoria: "Bebidas", platos: [
-            { n: "Limonada Natural", p: 7000 },
-            { n: "Limonada de Coco", p: 12000 },
-            { n: "Limonada Cerezada", p: 12000 },
-            { n: "Limonada Tropical", p: 12000 },
-            { n: "Jugos Naturales", p: 8000 },
-            { n: "Malteadas Varias", p: 15000 }
+        { cat: "BEBIDAS Y POSTRES", items: [
+            { n: "Limonada Natural", d: "Refrescante 16oz", p: 7000 },
+            { n: "Limonada de Coco", d: "Cremosa con coco natural", p: 12000 },
+            { n: "Limonada Cerezada", d: "Con cerezas marrasquino", p: 12000 },
+            { n: "Limonada Tropical", d: "Mezcla de frutas cítricas", p: 12000 },
+            { n: "Jugos Naturales", d: "En agua o leche", p: 8000 },
+            { n: "Banana Split", d: "3 sabores, fruta y barquillo", p: 15000 },
+            { n: "Malteadas", d: "Vainilla, chocolate o fresa", p: 15000 }
         ]}
     ];
 
-    const carrito = {};
+    let carrito = {};
 
-    // Renderizar el Menú
-    function renderMenu() {
-        const contenedor = document.getElementById('menu-app');
+    function renderizar() {
+        const container = document.getElementById('menu-container');
         let html = '';
-        datosMenu.forEach(cat => {
-            html += `<div class="categoria">${cat.categoria}</div>`;
-            cat.platos.forEach(plato => {
+        menuData.forEach(c => {
+            html += `<div class="cat-box">${c.cat}</div>`;
+            c.items.forEach(i => {
                 html += `
-                    <div class="plato">
-                        <div class="plato-detalle">
-                            <span class="plato-nombre">${plato.n}</span>
-                            <span class="plato-precio">$${plato.p.toLocaleString()}</span>
+                    <div class="item-card">
+                        <div class="item-info">
+                            <span class="item-name">${i.n}</span>
+                            <span class="item-desc">${i.d}</span>
+                            <span class="item-price">$${i.p.toLocaleString()}</span>
                         </div>
-                        <div class="controles">
-                            <button class="btn-cant" onclick="actualizar('${plato.n}', ${plato.p}, -1)">-</button>
-                            <span class="cantidad" id="cant-${plato.n}">0</span>
-                            <button class="btn-cant" onclick="actualizar('${plato.n}', ${plato.p}, 1)">+</button>
+                        <div class="qty-box">
+                            <button class="btn-qty" onclick="update('${i.n}', ${i.p}, -1)">-</button>
+                            <span class="qty-num" id="q-${i.n}">0</span>
+                            <button class="btn-qty" onclick="update('${i.n}', ${i.p}, 1)">+</button>
                         </div>
                     </div>`;
             });
         });
-        contenedor.innerHTML = html;
+        container.innerHTML = html;
     }
 
-    function actualizar(nombre, precio, cambio) {
-        if (!carrito[nombre]) carrito[nombre] = { cant: 0, precio: precio };
-        carrito[nombre].cant += cambio;
-        if (carrito[nombre].cant < 0) carrito[nombre].cant = 0;
+    function update(nombre, precio, delta) {
+        if (!carrito[nombre]) carrito[nombre] = { q: 0, p: precio };
+        carrito[nombre].q = Math.max(0, carrito[nombre].q + delta);
+        document.getElementById(`q-${nombre}`).innerText = carrito[nombre].q;
         
-        document.getElementById(`cant-${nombre}`).innerText = carrito[nombre].cant;
-        calcularTotal();
-    }
-
-    function calcularTotal() {
         let total = 0;
-        for (let key in carrito) {
-            total += carrito[key].cant * carrito[key].precio;
-        }
-        document.getElementById('total-general').innerText = total.toLocaleString();
+        Object.values(carrito).forEach(x => total += (x.q * x.p));
+        document.getElementById('total-text').innerText = total.toLocaleString();
     }
 
-    function enviarWhatsapp() {
-        const nom = document.getElementById('nombre').value;
-        const dir = document.getElementById('direccion').value;
-        const cel = document.getElementById('celular').value;
+    function enviarPedido() {
+        const n = document.getElementById('nombre').value;
+        const d = document.getElementById('direccion').value;
+        const c = document.getElementById('celular').value;
 
-        if (!nom || !dir || !cel) return alert("Por favor complete los datos del cliente");
+        if (!n || !d) return alert("Completa los datos del cliente");
 
-        let totalFinal = 0;
-        let lineasPedido = "";
+        let itemsMsg = "";
+        let finalT = 0;
 
-        for (let item in carrito) {
-            if (carrito[item].cant > 0) {
-                let subtotal = carrito[item].cant * carrito[item].precio;
-                totalFinal += subtotal;
-                lineasPedido += `✅ ${item} (x${carrito[item].cant}) - Subt: $${subtotal.toLocaleString()}\n`;
+        for (let key in carrito) {
+            if (carrito[key].q > 0) {
+                let sub = carrito[key].q * carrito[key].p;
+                itemsMsg += `• ${key} (x${carrito[key].q}) - $${sub.toLocaleString()}\n`;
+                finalT += sub;
             }
         }
 
-        if (totalFinal === 0) return alert("El pedido está vacío");
+        if (finalT === 0) return alert("Selecciona al menos un plato");
 
-        const mensaje = 
-            `*FACTURA - RESTAURANTE LA TRINIDAD*\n` +
-            `----------------------------------\n` +
-            `*CLIENTE:* ${nom}\n` +
-            `*DIRECCIÓN:* ${dir}\n` +
-            `*TEL:* ${cel}\n` +
-            `----------------------------------\n` +
-            `${lineasPedido}` +
-            `----------------------------------\n` +
-            `*TOTAL A PAGAR: $${totalFinal.toLocaleString()}*\n\n` +
-            `App por *Vibras Positivas* ©`;
+        const factura = `*LA TRINIDAD - PEDIDO*\n` +
+                        `--------------------------\n` +
+                        `*CLIENTE:* ${n}\n` +
+                        `*DIR:* ${d}\n` +
+                        `*TEL:* ${c}\n` +
+                        `--------------------------\n` +
+                        `${itemsMsg}` +
+                        `--------------------------\n` +
+                        `*TOTAL A PAGAR: $${finalT.toLocaleString()}*\n\n` +
+                        `_App desarrollada por Vibras Positivas_`;
 
-        const url = `https://wa.me/573053792414?text=${encodeURIComponent(mensaje)}`;
-        window.open(url, '_blank');
+        window.open(`https://wa.me/573053792414?text=${encodeURIComponent(factura)}`, '_blank');
     }
 
-    renderMenu();
+    renderizar();
 </script>
 
 </body>

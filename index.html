@@ -1,1 +1,149 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>La Trinidad - Pedidos</title>
+    <style>
+        :root { --primary: #8b0000; --gold: #d4af37; --bg: #fdf5e6; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); margin: 0; padding: 10px; color: #333; }
+        header { text-align: center; border-bottom: 2px solid var(--primary); padding-bottom: 10px; margin-bottom: 15px; }
+        .logo { font-weight: bold; font-size: 24px; color: var(--primary); text-transform: uppercase; }
+        .contact-info { font-size: 12px; margin-bottom: 10px; }
+        
+        .client-form { background: #fff; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .client-form input { width: 93%; padding: 10px; margin: 5px 0; border: 1px solid #ccc; border-radius: 4px; }
+        
+        .category-title { background: var(--primary); color: white; padding: 8px; border-radius: 4px; margin-top: 15px; }
+        .product-card { display: flex; justify-content: space-between; align-items: center; background: white; padding: 12px; margin: 8px 0; border-radius: 8px; border-left: 4px solid var(--gold); }
+        .product-info { flex-grow: 1; }
+        .price { color: var(--primary); font-weight: bold; }
+        
+        .controls { display: flex; align-items: center; gap: 10px; }
+        .btn-qty { background: var(--primary); color: white; border: none; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; font-size: 18px; }
+        
+        .footer-action { position: sticky; bottom: 0; background: var(--bg); padding: 15px; border-top: 1px solid #ddd; text-align: center; }
+        .btn-send { background: #25d366; color: white; border: none; padding: 15px 30px; border-radius: 50px; font-weight: bold; width: 100%; font-size: 18px; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        
+        .copyright { font-size: 10px; color: #777; margin-top: 10px; }
+        #expired-msg { display: none; position: fixed; inset: 0; background: white; z-index: 9999; text-align: center; padding-top: 50px; font-size: 20px; }
+    </style>
+</head>
+<body>
+
+<div id="expired-msg"><h1>Suscripción Vencida</h1><p>Contacte al administrador.</p></div>
+
+<header>
+    <div class="logo">La Trinidad Restaurante</div>
+    <div class="contact-info">Domicilios: 305 379 2414 | Caucasia</div>
+</header>
+
+<div class="client-form">
+    <strong>Datos de Entrega</strong>
+    <input type="text" id="nombre" placeholder="Nombre completo">
+    <input type="text" id="direccion" placeholder="Dirección">
+    <input type="tel" id="celular" placeholder="Celular">
+</div>
+
+<div id="menu-container">
+    </div>
+
+<div class="footer-action">
+    <button class="btn-send" onclick="enviarPedido()">ENVIAR PEDIDO A WHATSAPP</button>
+    <div class="copyright">App desarrollada por VIBRAS POSITIVAS © Derecho de Autor</div>
+</div>
+
+<script>
+    // --- CONTROL DE SUSCRIPCIÓN (FECHA LÍMITE) ---
+    const FECHA_VENCIMIENTO = "2026-12-31"; // Formato YYYY-MM-DD
+    if (new Date() > new Date(FECHA_VENCIMIENTO)) {
+        document.getElementById('expired-msg').style.display = 'block';
+    }
+
+    // --- LISTA DE PLATOS EXTRAÍDA ---
+    const menu = [
+        { cat: "CARNES", items: [
+            { n: "Chopa de Solomito", p: 35000 },
+            { n: "Pechuga de Pollo", p: 28000 },
+            { n: "Carne Asada", p: 25000 }
+        ]},
+        { cat: "MAICITOS", items: [
+            { n: "Maicito de Pollo", p: 18000 },
+            { n: "Maicito de Res", p: 19000 },
+            { n: "Maicito Especial", p: 22000 }
+        ]},
+        { cat: "CREPES Y OTROS", items: [
+            { n: "Crepe de Pollo", p: 13000 },
+            { n: "Banana Split", p: 15000 },
+            { n: "Limonada Natural", p: 7000 }
+        ]}
+    ];
+
+    const container = document.getElementById('menu-container');
+    const cantidades = {};
+
+    // Cargar Menú
+    menu.forEach(section => {
+        let html = `<div class="category-title">${section.cat}</div>`;
+        section.items.forEach(item => {
+            cantidades[item.n] = 0;
+            html += `
+                <div class="product-card">
+                    <div class="product-info">
+                        <div><strong>${item.n}</strong></div>
+                        <div class="price">$${item.p.toLocaleString()}</div>
+                    </div>
+                    <div class="controls">
+                        <button class="btn-qty" onclick="changeQty('${item.n}', -1)">-</button>
+                        <span id="qty-${item.n}">0</span>
+                        <button class="btn-qty" onclick="changeQty('${item.n}', 1)">+</button>
+                    </div>
+                </div>`;
+        });
+        container.innerHTML += html;
+    });
+
+    function changeQty(name, val) {
+        cantidades[name] = Math.max(0, cantidades[name] + val);
+        document.getElementById(`qty-${name}`).innerText = cantidades[name];
+    }
+
+    function enviarPedido() {
+        const nom = document.getElementById('nombre').value;
+        const dir = document.getElementById('direccion').value;
+        const cel = document.getElementById('celular').value;
+
+        if (!nom || !dir) return alert("Por favor llena los datos del cliente");
+
+        let total = 0;
+        let lista = "";
+        
+        menu.forEach(s => s.items.forEach(i => {
+            if (cantidades[i.n] > 0) {
+                let sub = i.p * cantidades[i.n];
+                total += sub;
+                lista += `*${i.n}* x${cantidades[i.n]} - $${sub.toLocaleString()}\n`;
+            }
+        }));
+
+        if (total === 0) return alert("Agrega al menos un plato");
+
+        const factura = `*FACTURA - LA TRINIDAD*\n` +
+            `--------------------------\n` +
+            `*Cliente:* ${nom}\n` +
+            `*Dir:* ${dir}\n` +
+            `*Cel:* ${cel}\n` +
+            `--------------------------\n` +
+            `${lista}` +
+            `--------------------------\n` +
+            `*TOTAL A PAGAR: $${total.toLocaleString()}*\n\n` +
+            `_App por Vibras Positivas_`;
+
+        const url = `https://wa.me/573053792414?text=${encodeURIComponent(factura)}`;
+        window.open(url, '_blank');
+    }
+</script>
+
+</body>
+</html>
 
